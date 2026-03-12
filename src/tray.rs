@@ -130,12 +130,21 @@ fn make_tray() -> hbb_common::ResultType<()> {
             }
             // We create the icon once the event loop is actually running
             // to prevent issues like https://github.com/tauri-apps/tray-icon/issues/90
-            let tray = TrayIconBuilder::new()
+            let app_name = crate::get_app_name();
+            #[cfg(target_os = "linux")]
+            let tray_temp_dir = std::env::var_os("XDG_RUNTIME_DIR")
+                .map(std::path::PathBuf::from)
+                .unwrap_or_else(std::env::temp_dir)
+                .join("rustdesk-tray");
+            let tray_builder = TrayIconBuilder::new()
                 .with_menu(Box::new(tray_menu.clone()))
                 .with_tooltip(tooltip(0))
+                .with_title(&app_name)
                 .with_icon(icon.clone())
-                .with_icon_as_template(true) // mac only
-                .build();
+                .with_icon_as_template(true);
+            #[cfg(target_os = "linux")]
+            let tray_builder = tray_builder.with_temp_dir_path(tray_temp_dir);
+            let tray = tray_builder.build();
             match tray {
                 Ok(tray) => _tray_icon = Arc::new(Mutex::new(Some(tray))),
                 Err(err) => {
