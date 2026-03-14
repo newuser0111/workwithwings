@@ -63,7 +63,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
     return _buildBlock(
         child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
-      : [
+      children: [
         buildLeftPane(context),
         if (!isIncomingOnly) const VerticalDivider(width: 1),
         if (!isIncomingOnly) Expanded(child: buildRightPane(context)),
