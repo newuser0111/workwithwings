@@ -412,6 +412,21 @@ class _DesktopHomePageState extends State<DesktopHomePage>
           SizedBox(
             height: 10.0,
           ),
+          Image.asset(
+  'assets/icon.png',
+  width: 120,
+  height: 120,
+),
+const SizedBox(height: 8),
+Text(
+  'Willkommen beim Work with Wings Support Modul.',
+  style: TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.bold,
+  ),
+  textAlign: TextAlign.center,
+),
+const SizedBox(height: 8),
           if (!isOutgoingOnly)
             Text(
               translate("desk_tip"),
