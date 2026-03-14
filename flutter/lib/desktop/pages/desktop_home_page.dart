@@ -388,7 +388,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
     );
   }
 
-  buildTip(BuildContext context) {
+buildTip(BuildContext context) {
     final isOutgoingOnly = bind.isOutgoingOnly();
     return Padding(
       padding:
@@ -409,24 +409,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
                 ),
             ],
           ),
-          SizedBox(
-            height: 10.0,
-          ),
-          Image.asset(
-  'assets/icon.png',
-  width: 120,
-  height: 120,
-),
-const SizedBox(height: 8),
-Text(
-  'Willkommen beim Work with Wings Support Modul.',
-  style: TextStyle(
-    fontSize: 14,
-    fontWeight: FontWeight.bold,
-  ),
-  textAlign: TextAlign.center,
-),
-const SizedBox(height: 8),
+          SizedBox(height: 10.0),
           if (!isOutgoingOnly)
             Text(
               translate("desk_tip"),
@@ -439,6 +422,21 @@ const SizedBox(height: 8),
               overflow: TextOverflow.clip,
               style: Theme.of(context).textTheme.bodySmall,
             ),
+          SizedBox(height: 10.0),
+          Image.asset(
+            'assets/icon.png',
+            width: 60,
+            height: 60,
+          ),
+          SizedBox(height: 8),
+          Text(
+            'Willkommen beim Work with Wings Support Modul.',
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.normal,
+            ),
+            textAlign: TextAlign.left,
+          ),
         ],
       ),
     );
