@@ -903,7 +903,7 @@ Widget buildWelcomeBanner() {
         ),
         SizedBox(height: 8),
         Text(
-          'Willkommen beim Work with Wings Support Modul.',
+          'Work with Wings Support Modul. Bei Fragen: business@workwithwings.com',
           style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.normal,
