@@ -63,7 +63,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
     return _buildBlock(
         child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+      : [
         buildLeftPane(context),
         if (!isIncomingOnly) const VerticalDivider(width: 1),
         if (!isIncomingOnly) Expanded(child: buildRightPane(context)),
@@ -79,7 +79,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
   Widget buildLeftPane(BuildContext context) {
     final isIncomingOnly = bind.isIncomingOnly();
     final isOutgoingOnly = bind.isOutgoingOnly();
-    final children = <Widget>[
+    final  = <Widget>[
       if (!isOutgoingOnly) buildPresetPasswordWarning(),
       if (bind.isCustomClient())
         Align(
@@ -111,10 +111,11 @@ class _DesktopHomePageState extends State<DesktopHomePage>
           }
         },
       ),
+      buildWelcomeBanner(),
       buildPluginEntry(),
     ];
     if (isIncomingOnly) {
-      children.addAll([
+      .addAll([
         Divider(),
         OnlineStatusWidget(
           onSvcStatusChanged: () {
@@ -134,14 +135,14 @@ class _DesktopHomePageState extends State<DesktopHomePage>
         width: isIncomingOnly ? 280.0 : 200.0,
         color: Theme.of(context).colorScheme.background,
         child: Stack(
-          children: [
+          : [
             Column(
-              children: [
+              : [
                 SingleChildScrollView(
                   controller: _leftPaneScrollController,
                   child: Column(
                     key: _childKey,
-                    children: children,
+                    : ,
                   ),
                 ),
                 Expanded(child: Container())
@@ -195,7 +196,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.baseline,
         textBaseline: TextBaseline.alphabetic,
-        children: [
+        : [
           Container(
             width: 2,
             decoration: const BoxDecoration(color: MyTheme.accent),
@@ -205,7 +206,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
               padding: const EdgeInsets.only(left: 7),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                : [
                   Container(
                     height: 25,
                     child: Row(
@@ -422,21 +423,6 @@ buildTip(BuildContext context) {
               overflow: TextOverflow.clip,
               style: Theme.of(context).textTheme.bodySmall,
             ),
-          SizedBox(height: 10.0),
-          Image.asset(
-            'assets/icon.png',
-            width: 60,
-            height: 60,
-          ),
-          SizedBox(height: 8),
-          Text(
-            'Willkommen beim Work with Wings Support Modul.',
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.normal,
-            ),
-            textAlign: TextAlign.left,
-          ),
         ],
       ),
     );
@@ -903,7 +889,31 @@ buildTip(BuildContext context) {
       shouldBeBlocked(_block, canBeBlocked);
     }
   }
-
+  
+Widget buildWelcomeBanner() {
+  return Padding(
+    padding: const EdgeInsets.only(left: 20.0, right: 16, top: 10, bottom: 10),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Image.asset(
+          'assets/icon.png',
+          width: 60,
+          height: 60,
+        ),
+        SizedBox(height: 8),
+        Text(
+          'Willkommen beim Work with Wings Support Modul.',
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.normal,
+          ),
+          textAlign: TextAlign.left,
+        ),
+      ],
+    ),
+  );
+}
   Widget buildPluginEntry() {
     final entries = PluginUiManager.instance.entries.entries;
     return Offstage(
