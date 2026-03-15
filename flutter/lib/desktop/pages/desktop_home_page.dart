@@ -79,7 +79,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
   Widget buildLeftPane(BuildContext context) {
     final isIncomingOnly = bind.isIncomingOnly();
     final isOutgoingOnly = bind.isOutgoingOnly();
-    final  = <Widget>[
+    final children = <Widget>[
       if (!isOutgoingOnly) buildPresetPasswordWarning(),
       if (bind.isCustomClient())
         Align(
@@ -93,6 +93,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
       buildTip(context),
       if (!isOutgoingOnly) buildIDBoard(context),
       if (!isOutgoingOnly) buildPasswordBoard(context),
+      buildWelcomeBanner(),
       FutureBuilder<Widget>(
         future: Future.value(
             Obx(() => buildHelpCards(stateGlobal.updateUrl.value))),
@@ -111,11 +112,10 @@ class _DesktopHomePageState extends State<DesktopHomePage>
           }
         },
       ),
-      buildWelcomeBanner(),
       buildPluginEntry(),
     ];
     if (isIncomingOnly) {
-      .addAll([
+      children.addAll([
         Divider(),
         OnlineStatusWidget(
           onSvcStatusChanged: () {
@@ -135,14 +135,14 @@ class _DesktopHomePageState extends State<DesktopHomePage>
         width: isIncomingOnly ? 280.0 : 200.0,
         color: Theme.of(context).colorScheme.background,
         child: Stack(
-          : [
+          children: [
             Column(
-              : [
+              children: [
                 SingleChildScrollView(
                   controller: _leftPaneScrollController,
                   child: Column(
                     key: _childKey,
-                    : ,
+                    children: children,
                   ),
                 ),
                 Expanded(child: Container())
@@ -196,7 +196,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.baseline,
         textBaseline: TextBaseline.alphabetic,
-        : [
+        children: [
           Container(
             width: 2,
             decoration: const BoxDecoration(color: MyTheme.accent),
@@ -206,7 +206,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
               padding: const EdgeInsets.only(left: 7),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                : [
+                children: [
                   Container(
                     height: 25,
                     child: Row(
@@ -389,7 +389,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
     );
   }
 
-buildTip(BuildContext context) {
+  buildTip(BuildContext context) {
     final isOutgoingOnly = bind.isOutgoingOnly();
     return Padding(
       padding:
@@ -423,6 +423,31 @@ buildTip(BuildContext context) {
               overflow: TextOverflow.clip,
               style: Theme.of(context).textTheme.bodySmall,
             ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildWelcomeBanner() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 20.0, right: 16, top: 10, bottom: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Image.asset(
+            'assets/icon.png',
+            width: 60,
+            height: 60,
+          ),
+          SizedBox(height: 8),
+          Text(
+            'Work with Wings Support Modul. Bei Fragen: business@workwithwings.com',
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.normal,
+            ),
+            textAlign: TextAlign.left,
+          ),
         ],
       ),
     );
@@ -503,22 +528,12 @@ buildTip(BuildContext context) {
           bind.mainIsInstalledDaemon(prompt: true);
         });
       }
-      //// Disable microphone configuration for macOS. We will request the permission when needed.
-      // else if ((await osxCanRecordAudio() !=
-      //     PermissionAuthorizeType.authorized)) {
-      //   return buildInstallCard("Permissions", "config_microphone", "Configure",
-      //       () async {
-      //     osxRequestAudio();
-      //     watchIsCanRecordAudio = true;
-      //   });
-      // }
     } else if (isLinux) {
       if (bind.isOutgoingOnly()) {
         return Container();
       }
       final LinuxCards = <Widget>[];
       if (bind.isSelinuxEnforcing()) {
-        // Check is SELinux enforcing, but show user a tip of is SELinux enabled for simple.
         final keyShowSelinuxHelpTip = "show-selinux-help-tip";
         if (bind.mainGetLocalOption(key: keyShowSelinuxHelpTip) != 'N') {
           LinuxCards.add(buildInstallCard(
@@ -528,8 +543,7 @@ buildTip(BuildContext context) {
             () async {},
             marginTop: LinuxCards.isEmpty ? 20.0 : 5.0,
             help: 'Help',
-            link:
-                'https://rustdesk.com/docs/en/client/linux/#permissions-issue',
+            link: 'https://rustdesk.com/docs/en/client/linux/#permissions-issue',
             closeButton: true,
             closeOption: keyShowSelinuxHelpTip,
           ));
@@ -559,8 +573,7 @@ buildTip(BuildContext context) {
         alignment: Alignment.centerRight,
         child: OutlinedButton(
           onPressed: () {
-            SystemNavigator.pop(); // Close the application
-            // https://github.com/flutter/flutter/issues/66631
+            SystemNavigator.pop();
             if (isWindows) {
               exit(0);
             }
@@ -723,10 +736,6 @@ buildTip(BuildContext context) {
       if (watchIsInputMonitoring) {
         if (bind.mainIsCanInputMonitoring(prompt: false)) {
           watchIsInputMonitoring = false;
-          // Do not notify for now.
-          // Monitoring may not take effect until the process is restarted.
-          // rustDeskWinManager.call(
-          //     WindowType.RemoteDesktop, kWindowDisableGrabKeyboard, '');
           setState(() {});
         }
       }
@@ -766,16 +775,16 @@ buildTip(BuildContext context) {
 
     bool isChattyMethod(String methodName) {
       switch (methodName) {
-        case kWindowBumpMouse: return true;
+        case kWindowBumpMouse:
+          return true;
       }
-
       return false;
     }
 
     rustDeskWinManager.setMethodHandler((call, fromWindowId) async {
       if (!isChattyMethod(call.method)) {
         debugPrint(
-          "[Main] call ${call.method} with args ${call.arguments} from window $fromWindowId");
+            "[Main] call ${call.method} with args ${call.arguments} from window $fromWindowId");
       }
       if (call.method == kWindowMainWindowOnTop) {
         windowOnTop(null);
@@ -811,8 +820,7 @@ buildTip(BuildContext context) {
         );
       } else if (call.method == kWindowBumpMouse) {
         return RdPlatformChannel.instance.bumpMouse(
-          dx: call.arguments['dx'],
-          dy: call.arguments['dy']);
+            dx: call.arguments['dx'], dy: call.arguments['dy']);
       } else if (call.method == kWindowEventMoveTabToNewWindow) {
         final args = call.arguments.split(',');
         int? windowId;
@@ -889,31 +897,7 @@ buildTip(BuildContext context) {
       shouldBeBlocked(_block, canBeBlocked);
     }
   }
-  
-Widget buildWelcomeBanner() {
-  return Padding(
-    padding: const EdgeInsets.only(left: 20.0, right: 16, top: 10, bottom: 10),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Image.asset(
-          'assets/icon.png',
-          width: 60,
-          height: 60,
-        ),
-        SizedBox(height: 8),
-        Text(
-          'Work with Wings Support Modul. Bei Fragen: business@workwithwings.com',
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.normal,
-          ),
-          textAlign: TextAlign.left,
-        ),
-      ],
-    ),
-  );
-}
+
   Widget buildPluginEntry() {
     final entries = PluginUiManager.instance.entries.entries;
     return Offstage(
@@ -941,7 +925,6 @@ void setPasswordDialog({VoidCallback? notEmptyCallback}) async {
     DigitValidationRule(),
     UppercaseValidationRule(),
     LowercaseValidationRule(),
-    // SpecialCharacterValidationRule(),
     MinCharactersValidationRule(8),
   ];
   final maxLength = bind.mainMaxEncryptLen();
@@ -984,9 +967,7 @@ void setPasswordDialog({VoidCallback? notEmptyCallback}) async {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(
-              height: 8.0,
-            ),
+            const SizedBox(height: 8.0),
             Row(
               children: [
                 Expanded(
@@ -1013,9 +994,7 @@ void setPasswordDialog({VoidCallback? notEmptyCallback}) async {
                 Expanded(child: PasswordStrengthIndicator(password: rxPass)),
               ],
             ).marginSymmetric(vertical: 8),
-            const SizedBox(
-              height: 8.0,
-            ),
+            const SizedBox(height: 8.0),
             Row(
               children: [
                 Expanded(
@@ -1035,9 +1014,7 @@ void setPasswordDialog({VoidCallback? notEmptyCallback}) async {
                 ),
               ],
             ),
-            const SizedBox(
-              height: 8.0,
-            ),
+            const SizedBox(height: 8.0),
             Obx(() => Wrap(
                   runSpacing: 8,
                   spacing: 4,
